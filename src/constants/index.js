@@ -1,4 +1,6 @@
 export const TYPE = {
   ADD_TASK: 'ADD TASK',
   DELETE_TASK: 'DELETE TASK',
+  EDIT: 'EDIT',
+  NO_EDIT: 'NO EDIT',
 }

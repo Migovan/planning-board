@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import './index.css'
 
 import { TYPE } from '../constants'
 
@@ -13,6 +14,33 @@ const Container = styled.div`
   width: 40%;
   margin: auto;
   margin-top: 80px;
+  h1 {
+    margin: 10px 0;
+    color: #6b946b;
+  }
+  button {
+    width: 42%;
+    height: 33px;
+    margin: 10px 0;
+    border-radius: 0;
+    border: 1px solid;
+    background-color: #efa823;
+    color: #fff;
+    font-family: 'Black Han Sans', sans-serif;
+    letter-spacing: 1px;
+    border-radius: 20px;
+  }
+  textarea {
+    padding: 18px;
+    margin: 5px 0;
+    border-radius: 20px;
+    border: 1px solid gainsboro;
+    resize: none;
+    min-height: 80px;
+    font-family: 'Black Han Sans', sans-serif;
+    color: #609567;
+    outline: none;
+  }
 `
 
 class Panel extends Component {
@@ -21,7 +49,8 @@ class Panel extends Component {
     this.state = {
       title: '',
       description: '',
-      id: this.makeId()
+      id: this.makeId(),
+      edit: true
     }
     this.dataTitle = this.dataTitle.bind(this)
     this.dataDescription = this.dataDescription.bind(this)
@@ -60,17 +89,18 @@ class Panel extends Component {
     const { title, description } = this.state
     return (
       <Container>
-        <h1>planning-board</h1>
+        <h1>planning-board.</h1>
         <Input onChange={this.dataTitle}
                value={title}
                type="text"
-               placeholder='title'/>
-        <Input onChange={this.dataDescription}
-               value={description}
-               type="text"
-               placeholder='description'/>
+               placeholder='title'
+               className='input-title'/>
+        <textarea onChange={this.dataDescription}
+                  value={description}
+                  type="text"
+                  placeholder='description'/>
         <button type='button'
-                onClick={this.addTask}>click</button>
+                onClick={this.addTask}>Add</button>
         <TaskList/>
       </Container>
     )

@@ -18,6 +18,16 @@ const taskManager = (state = initialState, action) => {
       return { ...state, taskList: updateTaskList }
       break
 
+    case TYPE.EDIT:
+      state.taskList[action.index].edit = false
+      return { ...state }
+      break
+
+    case TYPE.NO_EDIT:
+      state.taskList[action.index].edit = true
+      return { ...state }
+      break
+
     default:
        return state
   }
