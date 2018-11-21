@@ -6,7 +6,9 @@ import './index.css'
 import { TYPE } from '../constants'
 
 import Input from '../components/input'
+import Button from '../components/button'
 import TaskList from '../components/task-list'
+import Error from '../components/error'
 
 const Container = styled.div`
   display: flex;
@@ -18,19 +20,8 @@ const Container = styled.div`
     margin: 10px 0;
     color: #6b946b;
   }
-  button {
-    width: 42%;
-    height: 33px;
-    margin: 10px 0;
-    border-radius: 0;
-    border: 1px solid;
-    background-color: #efa823;
-    color: #fff;
-    font-family: 'Black Han Sans', sans-serif;
-    letter-spacing: 1px;
-    border-radius: 20px;
-  }
-  textarea {
+`
+const Textarea = styled.textarea`
     padding: 18px;
     margin: 5px 0;
     border-radius: 20px;
@@ -40,7 +31,11 @@ const Container = styled.div`
     font-family: 'Black Han Sans', sans-serif;
     color: #609567;
     outline: none;
-  }
+    ::-webkit-input-placeholder { color: #6095676b; }
+    :focus { 
+      outline: none;
+      box-shadow: 0 0 3pt 2pt #2ab7e0;
+    }
 `
 
 class Panel extends Component {
@@ -50,12 +45,34 @@ class Panel extends Component {
       title: '',
       description: '',
       id: this.makeId(),
-      edit: true
+      edit: true,
+      errorTitle: false,
+      errorDescription: false
     }
     this.dataTitle = this.dataTitle.bind(this)
     this.dataDescription = this.dataDescription.bind(this)
     this.addTask = this.addTask.bind(this)
     this.makeId = this.makeId.bind(this)
+    this.error = this.error.bind(this)
+  }
+
+  error(){
+    const { title, description } = this.state
+    !title && !description
+      && this.setState({
+        errorTitle: true,
+        errorDescription: true
+      })
+
+    !title
+      && this.setState({
+        errorTitle: true
+      })
+
+    !description
+      && this.setState({
+        errorDescription: true
+      })
   }
 
   makeId(){
@@ -65,42 +82,46 @@ class Panel extends Component {
 
   dataTitle(event){
     this.setState({
-      title: event.target.value
+      title: event.target.value,
+      errorTitle: false
     })
   }
 
   dataDescription(event){
     this.setState({
-      description: event.target.value
+      description: event.target.value,
+      errorDescription: false
     })
   }
 
   addTask(event){
     event.preventDefault()
-    this.setState({
-        title: '',
-        description: '',
-        id: this.makeId()
-      })
     this.props.dataTask(this.state)
+
+    this.setState({
+      title: '',
+      description: '',
+      id: this.makeId(),
+    })
   }
 
   render() {
-    const { title, description } = this.state
+    const { title, description , errorTitle, errorDescription} = this.state
     return (
       <Container>
         <h1>planning-board.</h1>
         <Input onChange={this.dataTitle}
                value={title}
                type="text"
-               placeholder='title'
-               className='input-title'/>
-        <textarea onChange={this.dataDescription}
+               placeholder='title'/>
+        {errorTitle && <Error/>}
+        <Textarea onChange={this.dataDescription}
                   value={description}
                   type="text"
                   placeholder='description'/>
-        <button type='button'
-                onClick={this.addTask}>Add</button>
+        {errorDescription && <Error/>}
+        <Button onClick={title && description ? this.addTask : this.error}
+                className='add-button'>Add</Button>
         <TaskList/>
       </Container>
     )

@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux"
 import styled from 'styled-components'
-import './index.css'
 
 import Button from '../button'
 
 import {TYPE} from "../../constants"
-import checkMark  from '../../assets/image/check-mark.png'
-import deleteIcon  from  '../../assets/image/delete.png'
-import editIcon from '../../assets/image/edit-button.png'
+// import checkMark  from '../../assets/image/check-mark.png'
+// import deleteIcon  from  '../../assets/image/delete.png'
+// import editIcon from '../../assets/image/edit-button.png'
 
 const Ul = styled.ul`
   list-style-type: none;
@@ -28,11 +27,28 @@ const Li = styled.li`
     font-family: 'Black Han Sans', sans-serif;
     color: #609567;
     outline: none;
+    box-shadow: ${props => props.focus && '0 0 3pt 2pt #2ab7e0'};
+  }
+  textarea {
+    padding: 18px;
+    margin: 5px 0;
+    border-radius: 20px;
+    border: 1px solid gainsboro;
+    resize: none;
+    min-height: 80px;
+    font-family: 'Black Han Sans', sans-serif;
+    color: #609567;
+    outline: none;
+    box-shadow: ${props => props.focus && '0 0 3pt 2pt #2ab7e0'};
   }
 `
 
 class TaskList extends Component {
   constructor(props) {
+    super(props)
+    this.state = {
+      focus: false
+    }
     super(props)
    this.deleteTask = this.deleteTask.bind(this)
    this.editTask = this.editTask.bind(this)
@@ -44,10 +60,16 @@ class TaskList extends Component {
   }
 
   editTask(index){
+    this.setState({
+      focus: true
+    })
     this.props.edit(index)
   }
 
   saveTask(index){
+    this.setState({
+      focus: false
+    })
     this.props.noEdit(index)
   }
 
@@ -56,19 +78,16 @@ class TaskList extends Component {
     return (
       <Ul>
         {list.map((item, index) =>
-          <Li key={item.id}>
+          <Li key={item.id} focus={this.state.focus}>
             <input defaultValue={item.title}
                    readOnly={list[index].edit}/>
             <textarea defaultValue={item.description}
-                   readOnly={list[index].edit}/>
+                      readOnly={list[index].edit}/>
             <div>
-              <Button onClick={() => this.deleteTask(index)}
-                      className='button-with-task'>Delete</Button>
+              <Button onClick={() => this.deleteTask(index)}>Delete</Button>
               {list[index].edit
-                ? <Button onClick={() => this.editTask(index)}
-                          className='button-with-task'>Edit</Button>
-                : <Button onClick={() => this.saveTask(index)}
-                          className='button-with-task'>Save</Button>
+                ? <Button onClick={() => this.editTask(index)}>Edit</Button>
+                : <Button onClick={() => this.saveTask(index)}>Save</Button>
               }
             </div>
           </Li>
