@@ -11,7 +11,17 @@ const InputStyled = styled.input`
     font-family: 'Black Han Sans', sans-serif;
     color: #609567;
     outline: none;
-    ::-webkit-input-placeholder { color: #6095676b; }
+    ::placeholder { color: #6095676b; }
+    :-ms-input-placeholder { 
+      color: #6095676b; 
+      opacity: 1; 
+    }
+    :-ms-input-placeholder { 
+    color: #6095676b;
+    }
+    ::-ms-input-placeholder {
+        color: #6095676b;
+    }
     :focus { 
       outline: none;
       box-shadow: 0 0 3pt 2pt #2ab7e0;

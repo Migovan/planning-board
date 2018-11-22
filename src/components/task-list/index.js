@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux"
+import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 
 import Button from '../button'
 
-import {TYPE} from "../../constants"
-// import checkMark  from '../../assets/image/check-mark.png'
-// import deleteIcon  from  '../../assets/image/delete.png'
-// import editIcon from '../../assets/image/edit-button.png'
+import { deleteTask, edit } from '../../actions'
+// import checkMark  from '../../assets/icon/check-mark.png'
+// import deleteIcon  from  '../../assets/icon/delete.png'
+// import editIcon from '../../assets/icon/edit-button.png'
 
 const Ul = styled.ul`
   list-style-type: none;
@@ -49,32 +50,28 @@ class TaskList extends Component {
     this.state = {
       focus: false
     }
-    super(props)
-   this.deleteTask = this.deleteTask.bind(this)
-   this.editTask = this.editTask.bind(this)
-   this.saveTask = this.saveTask.bind(this)
   }
 
-  deleteTask(index){
-    this.props.deleteTask(index)
+  deleteTask = (id) =>{
+    this.props.deleteTask(id)
   }
 
-  editTask(index){
+  editTask = (id) => {
     this.setState({
       focus: true
     })
-    this.props.edit(index)
+    this.props.edit(id, this.state.focus)
   }
 
-  saveTask(index){
+  saveTask = (id) => {
     this.setState({
       focus: false
     })
-    this.props.noEdit(index)
+    this.props.edit(id, this.state.focus)
   }
 
   render() {
-    const list = this.props.taskManager.taskList
+    const list = this.props.taskManager
     return (
       <Ul>
         {list.map((item, index) =>
@@ -84,10 +81,10 @@ class TaskList extends Component {
             <textarea defaultValue={item.description}
                       readOnly={list[index].edit}/>
             <div>
-              <Button onClick={() => this.deleteTask(index)}>Delete</Button>
+              <Button onClick={() => this.deleteTask(item.id)}>Delete</Button>
               {list[index].edit
-                ? <Button onClick={() => this.editTask(index)}>Edit</Button>
-                : <Button onClick={() => this.saveTask(index)}>Save</Button>
+                ? <Button onClick={() => this.editTask(item.id)}>Edit</Button>
+                : <Button onClick={() => this.saveTask(item.id)}>Save</Button>
               }
             </div>
           </Li>
@@ -103,24 +100,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    deleteTask: (index) => {
-      dispatch({
-        type: TYPE.DELETE_TASK, index
-      })
-    },
-    edit: (index) => {
-      dispatch({
-        type: TYPE.EDIT, index
-      })
-    },
-    noEdit: (index) => {
-      dispatch({
-        type: TYPE.NO_EDIT, index
-      })
-    },
-  }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  deleteTask,
+  edit
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

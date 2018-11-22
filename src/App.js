@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Panel from './container/panel'
+import Panel from './containers/panel'
 
 class App extends Component {
   render() {

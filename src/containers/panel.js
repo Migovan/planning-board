@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
+import nanoid from 'nanoid'
 import './index.css'
 
-import { TYPE } from '../constants'
+import { dataTask } from '../actions'
 
 import Input from '../components/input'
 import Button from '../components/button'
@@ -31,7 +33,16 @@ const Textarea = styled.textarea`
     font-family: 'Black Han Sans', sans-serif;
     color: #609567;
     outline: none;
-    ::-webkit-input-placeholder { color: #6095676b; }
+    ::placeholder { 
+      color: #6095676b;
+      opacity: 1;
+    }
+    :-ms-input-placeholder { 
+    color: #6095676b;
+    }
+    ::-ms-input-placeholder {
+        color: #6095676b;
+    }
     :focus { 
       outline: none;
       box-shadow: 0 0 3pt 2pt #2ab7e0;
@@ -45,58 +56,52 @@ class Panel extends Component {
       title: '',
       description: '',
       id: this.makeId(),
-      edit: true,
       errorTitle: false,
       errorDescription: false
     }
-    this.dataTitle = this.dataTitle.bind(this)
-    this.dataDescription = this.dataDescription.bind(this)
-    this.addTask = this.addTask.bind(this)
-    this.makeId = this.makeId.bind(this)
-    this.error = this.error.bind(this)
   }
 
-  error(){
+  error = () => {
     const { title, description } = this.state
-    !title && !description
-      && this.setState({
+    if (!title && !description) {
+      this.setState({
         errorTitle: true,
         errorDescription: true
       })
-
-    !title
-      && this.setState({
+    } else if (!title && description){
+      this.setState({
         errorTitle: true
       })
-
-    !description
-      && this.setState({
+    } else {
+      this.setState({
         errorDescription: true
       })
+    }
   }
 
   makeId(){
-    const id = `f${(~~(Math.random()*1e8)).toString(16)}`
+    const id = nanoid(4)
     return id
   }
 
-  dataTitle(event){
+  dataTitle = (event) => {
     this.setState({
       title: event.target.value,
       errorTitle: false
     })
   }
 
-  dataDescription(event){
+  dataDescription = (event) => {
     this.setState({
       description: event.target.value,
       errorDescription: false
     })
   }
 
-  addTask(event){
+  addTask = (event) => {
     event.preventDefault()
-    this.props.dataTask(this.state)
+    const { title, description, id } = this.state
+    this.props.dataTask(title, description, id)
 
     this.setState({
       title: '',
@@ -128,18 +133,6 @@ class Panel extends Component {
   }
 }
 
-const mapStateToProps = () => {
-  return {}
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({ dataTask }, dispatch)
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dataTask: (data) => {
-      dispatch({
-        type: TYPE.ADD_TASK, data
-      })
-    },
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Panel)
+export default connect(null, mapDispatchToProps)(Panel)

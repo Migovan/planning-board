@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import  *as reducers from './store/reducers'
+import  *as reducers from './reducers/index'
 import thunk from 'redux-thunk'
 
 const store = createStore(combineReducers(reducers), applyMiddleware(thunk));
