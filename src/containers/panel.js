@@ -3,16 +3,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 import nanoid from 'nanoid'
-import './index.css'
-
 import { dataTask } from '../actions'
-
 import Input from '../components/input'
 import Button from '../components/button'
 import TaskList from '../components/task-list'
 import Error from '../components/error'
 
-const Container = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 40%;
@@ -113,22 +110,22 @@ class Panel extends Component {
   render() {
     const { title, description , errorTitle, errorDescription} = this.state
     return (
-      <Container>
+      <Wrapper>
         <h1>planning-board.</h1>
         <Input onChange={this.dataTitle}
                value={title}
                type="text"
-               placeholder='title'/>
+               placeholder="title"/>
         {errorTitle && <Error/>}
         <Textarea onChange={this.dataDescription}
                   value={description}
                   type="text"
-                  placeholder='description'/>
+                  placeholder="description"/>
         {errorDescription && <Error/>}
         <Button onClick={title && description ? this.addTask : this.error}
-                className='add-button'>Add</Button>
+                className="add-button">Add</Button>
         <TaskList/>
-      </Container>
+      </Wrapper>
     )
   }
 }

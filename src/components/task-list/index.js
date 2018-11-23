@@ -2,13 +2,8 @@ import React, { Component } from 'react'
 import {connect} from "react-redux"
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
-
-import Button from '../button'
-
 import { deleteTask, edit } from '../../actions'
-// import checkMark  from '../../assets/icon/check-mark.png'
-// import deleteIcon  from  '../../assets/icon/delete.png'
-// import editIcon from '../../assets/icon/edit-button.png'
+import Button from '../button'
 
 const Ul = styled.ul`
   list-style-type: none;
@@ -81,10 +76,13 @@ class TaskList extends Component {
             <textarea defaultValue={item.description}
                       readOnly={list[index].edit}/>
             <div>
-              <Button onClick={() => this.deleteTask(item.id)}>Delete</Button>
+              <Button onClick={() => this.deleteTask(item.id)}
+                      className="small-button">Delete</Button>
               {list[index].edit
-                ? <Button onClick={() => this.editTask(item.id)}>Edit</Button>
-                : <Button onClick={() => this.saveTask(item.id)}>Save</Button>
+                ? <Button onClick={() => this.editTask(item.id)}
+                          className="small-button">Edit</Button>
+                : <Button onClick={() => this.saveTask(item.id)}
+                          className="small-button">Save</Button>
               }
             </div>
           </Li>
