@@ -1,5 +1,21 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
+const SmallButton = css`
+  width: 20%;
+  background-color: #4eb6d6;
+  margin-right: 10px;
+  :hover {
+    background-color:#7dcfe8
+  }
+`
+const BigButton = css`
+  width: 42%;
+  background-color: #efa823;
+  :hover {
+    background-color:#efc26f;
+  }
+`
 
 const ButtonStyled = styled.button`
     height: 33px;
@@ -12,15 +28,8 @@ const ButtonStyled = styled.button`
     outline: none;
     cursor: pointer;
     
-    ${props => props.className === 'add-button' 
-      && '{width: 42%; background-color: #efa823;}' +
-         ':hover{background-color:#efc26f}'
-    } 
-    
-    ${props => props.className === 'small-button'
-      && '{width: 20%; background-color: #4eb6d6; margin-right: 10px;}' +
-         ':hover{background-color:#7dcfe8}'
-    } 
+    ${props => props.className === 'add-button' && BigButton} 
+    ${props => props.className === 'small-button' && SmallButton} 
 `
 
 const Button = ({ onClick, children, className = '' }) => {
