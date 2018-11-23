@@ -15,3 +15,11 @@ export const edit = (id, showFocus) => {
     })
   }
 }
+
+export const done = (id, statusDone) => {
+  return (dispatch) => {
+    dispatch({
+      type: TYPE.DONE, id, statusDone
+    })
+  }
+}

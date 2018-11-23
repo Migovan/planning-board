@@ -3,4 +3,5 @@ export const TYPE = {
   DELETE_TASK: 'DELETE_TASK',
   EDIT: 'EDIT',
   NO_EDIT: 'NO_EDIT',
+  DONE: 'DONE',
 }
