@@ -1,37 +1,50 @@
-import { TYPE } from '../constants/index'
+import { TYPES } from '../constants/index'
 
 const taskManager = (state = [], action) => {
   switch (action.type) {
-    case TYPE.ADD_TASK:
+    case TYPES.ADD_TASK:
+      const { title, description, id, typeCheckbox } = action
       return [
         ...state,
         {
-          title: action.title,
-          description: action.description,
-          id: action.id,
+          title,
+          description,
+          id,
+          typeCheckbox,
           edit: true,
           done: false,
         }
       ]
 
-    case TYPE.DELETE_TASK:
+    case TYPES.DELETE_TASK:
       return state.filter(item =>{
         return item.id !== action.id
       })
 
-    case TYPE.EDIT:
+    case TYPES.EDIT:
       return state.map(item =>
       (item.id === action.id)
         ? {...item, edit: action.showFocus }
         : item
       )
 
-    case TYPE.DONE:
+    case TYPES.DONE:
       return state.map(item =>
         (item.id === action.id)
           ? {...item, done: action.statusDone }
           : item
       )
+
+    case TYPES.IMPORTANCE_CHECKBOX:
+      return [
+        ...state,
+        {
+          checkboxImportance: action.payload,
+        }
+      ]
+
+    case TYPES.SORT_TASKS:
+      return action.newList
 
     default:
        return state

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux"
 import { bindActionCreators } from 'redux'
-import styled from 'styled-components'
-import { deleteTask, edit, done } from '../../actions'
+import styled, { css } from 'styled-components'
+import { deleteTask, edit, done, sortTasks } from '../../actions'
 import Button from '../button'
+import SearchBar from '../search-bar'
+
 import CheckMark from '../../assets/icon/done.png'
 
 const Ul = styled.ul`
@@ -11,10 +13,30 @@ const Ul = styled.ul`
   padding: 0;
 `
 
+const Ordinary = css`
+  box-shadow: 0px 0px 20px #f1d90d;
+`
+
+const Medium = css`
+  box-shadow: 0px 0px 20px #f1a974;
+`
+
+const High = css`
+  box-shadow: 0px 0px 20px #ff0000;
+`
+
 const Li = styled.li`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 10px 0 30px;
+  
+  ${props => props.typeCheckbox === 'ordinary' && Ordinary};
+  ${props => props.typeCheckbox === 'medium' && Medium};
+  ${props => props.typeCheckbox === 'high' && High};
+ 
   input {
     width: 40%;
     height: 25px;
@@ -62,10 +84,6 @@ class TaskList extends Component {
     }
   }
 
-  deleteTask = (id) =>{
-    this.props.deleteTask(id)
-  }
-
   editTask = (id) => {
     this.setState({
       focus: true
@@ -91,36 +109,68 @@ class TaskList extends Component {
     this.props.done(id, this.state.done)
   }
 
+  notSort = () => {
+    this.props.sortTasks(this.props.taskManager)
+  }
+
+  ordinarySort = () => {
+    const newList = this.props.taskManager.filter(item => item.typeCheckbox ==='ordinary')
+    this.props.sortTasks(newList)
+  }
+
+  mediumSort = () => {
+    const newList = this.props.taskManager.filter(item => item.typeCheckbox ==='medium')
+    this.props.sortTasks(newList)
+  }
+
+  highSort = () => {
+    const newList = this.props.taskManager.filter(item => item.typeCheckbox ==='high')
+    this.props.sortTasks(newList)
+  }
+
   render() {
     const list = this.props.taskManager
     return (
-      <Ul>
-        {list.map((item, index) =>
-          <Li key={item.id} edit={item.edit}>
-            <div>
-              <section>
-                <input defaultValue={item.title}
-                       readOnly={list[index].edit}/>
-                <textarea defaultValue={item.description}
-                          readOnly={list[index].edit}/>
-              </section>
+      <>
+        <SearchBar notSort={this.notSort}
+                   ordinarySort={this.ordinarySort}
+                   mediumSort={this.mediumSort}
+                   highSort={this.highSort}
+        />
+        <Ul>
+          {list.map((item, index) =>
+            <Li key={item.id}
+                edit={item.edit}
+                typeCheckbox={item.typeCheckbox}>
               <div>
-                <Button onClick={() => this.deleteTask(item.id)}
-                        className="small-button">Delete</Button>
-                <Button onClick={() => item.edit
-                  ? this.editTask(item.id)
-                  : this.saveTask(item.id)}
-                        className="small-button">
-                  {item.edit ? "Edit" : "Save"}
-                </Button>
-                <Button onClick={() => this.doneTask(item.id)}
-                        className="small-button">{item.done ? "Modify" : "Done"}</Button>
+                <section>
+                  <input defaultValue={item.title}
+                         readOnly={list[index].edit}/>
+                  <textarea defaultValue={item.description}
+                            readOnly={list[index].edit}/>
+                </section>
+                <div>
+                  <Button onClick={() => item.edit
+                    ? this.editTask(item.id)
+                    : this.saveTask(item.id)}
+                          className="small-button">
+                    {item.edit ? "Edit" : "Save"}
+                  </Button>
+                  <Button onClick={() => this.doneTask(item.id)}
+                          className="small-button">
+                    {item.done ? "Modify" : "Done"}
+                  </Button>
+                  <Button onClick={() => this.props.deleteTask(item.id)}
+                          className="small-button">
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-            {item.done && <img src={CheckMark} alt="check-mark"/>}
-          </Li>
-        )}
-      </Ul>
+              {item.done && <img src={CheckMark} alt="check-mark"/>}
+            </Li>
+          )}
+        </Ul>
+      </>
     )
   }
 }
@@ -134,7 +184,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   deleteTask,
   edit,
-  done
+  done,
+  sortTasks
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

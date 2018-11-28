@@ -1,50 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import styled from 'styled-components'
+import {
+  Wrapper,
+  Textarea,
+  ImportanceBlock,
+} from './styled'
 import nanoid from 'nanoid'
-import { dataTask } from '../actions'
+import { addTaskData } from '../actions'
 import Input from '../components/input'
 import Button from '../components/button'
 import TaskList from '../components/task-list'
 import Error from '../components/error'
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  margin: auto;
-  margin-top: 80px;
-  h1 {
-    margin: 10px 0;
-    color: #6b946b;
-  }
-`
-const Textarea = styled.textarea`
-    padding: 18px;
-    margin: 5px 0;
-    border-radius: 20px;
-    border: 1px solid gainsboro;
-    resize: none;
-    min-height: 80px;
-    font-family: 'Black Han Sans', sans-serif;
-    color: #609567;
-    outline: none;
-    ::placeholder { 
-      color: #6095676b;
-      opacity: 1;
-    }
-    :-ms-input-placeholder { 
-    color: #6095676b;
-    }
-    ::-ms-input-placeholder {
-        color: #6095676b;
-    }
-    :focus { 
-      outline: none;
-      box-shadow: 0 0 3pt 2pt #2ab7e0;
-    }
-`
+import ImportanceCheckbox from '../components/importance-checbox'
 
 class Panel extends Component {
   constructor(props){
@@ -54,23 +22,51 @@ class Panel extends Component {
       description: '',
       id: this.makeId(),
       errorTitle: false,
-      errorDescription: false
+      errorDescription: false,
+      errorCheckbox: false,
+      typeCheckbox: '',
+      checkboxImportance: false
     }
   }
 
   error = () => {
-    const { title, description } = this.state
-    if (!title && !description) {
+    const { title, description, typeCheckbox } = this.state
+
+    if (!typeCheckbox && title.trim() && description.trim()){
+      this.setState({
+        errorCheckbox: true
+      })
+    } else if (typeCheckbox && !title.trim() && description.trim()) {
+      this.setState({
+        errorTitle: true
+      })
+    }
+    else if (typeCheckbox && title.trim() && !description.trim()) {
+      this.setState({
+        errorDescription: true
+      })
+    }
+    else if (!typeCheckbox && !title.trim() && description.trim()) {
+      this.setState({
+        errorCheckbox: true,
+        errorTitle: true
+      })
+    }
+    else if (typeCheckbox && !title.trim() && !description.trim()) {
       this.setState({
         errorTitle: true,
         errorDescription: true
       })
-    } else if (!title && description){
+    }
+    else if (!typeCheckbox && title.trim() && !description.trim()) {
       this.setState({
-        errorTitle: true
+        errorCheckbox: true,
+        errorDescription: true
       })
     } else {
       this.setState({
+        errorCheckbox: true,
+        errorTitle: true,
         errorDescription: true
       })
     }
@@ -95,23 +91,62 @@ class Panel extends Component {
     })
   }
 
+  toggleCheckbox = (typeCheckbox) => {
+    if (!this.state.checkboxImportance) {
+      this.setState({
+        checkboxImportance: true,
+        errorCheckbox: false,
+        typeCheckbox
+      })
+    } else {
+      this.setState({
+        checkboxImportance: false,
+        typeCheckbox: ''
+      })
+    }
+  }
+
   addTask = (event) => {
     event.preventDefault()
-    const { title, description, id } = this.state
-    this.props.dataTask(title, description, id)
-
+    const { title, description, id, typeCheckbox} = this.state
+    this.props.addTaskData(title, description, id, typeCheckbox)
     this.setState({
       title: '',
       description: '',
       id: this.makeId(),
+      typeCheckbox: '',
+      checkboxImportance: false,
     })
   }
 
   render() {
-    const { title, description , errorTitle, errorDescription} = this.state
+    const {
+      title,
+      description ,
+      errorTitle,
+      errorDescription,
+      errorCheckbox,
+      checkboxImportance,
+      typeCheckbox
+    } = this.state
+    const checkedCheckbox = checkboxImportance && typeCheckbox
+
     return (
       <Wrapper>
-        <h1>planning-board.</h1>
+        <h1>Planning-board.</h1>
+        <ImportanceBlock>
+          <h2>Importance of the task:</h2>
+          <ImportanceCheckbox onChange={() => {this.toggleCheckbox("ordinary")}}
+                              checked={checkedCheckbox  === "ordinary"}
+                              importance="ordinary"/>
+          <ImportanceCheckbox onChange={() => {this.toggleCheckbox("medium")}}
+                              checked={checkedCheckbox  === "medium"}
+                              importance="medium"/>
+          <ImportanceCheckbox onChange={() => {this.toggleCheckbox("high")}}
+                              checked={checkedCheckbox  === "high"}
+                              importance="high"/>
+        </ImportanceBlock>
+        {errorCheckbox && <Error/>}
         <Input onChange={this.dataTitle}
                value={title}
                type="text"
@@ -122,7 +157,7 @@ class Panel extends Component {
                   type="text"
                   placeholder="description"/>
         {errorDescription && <Error/>}
-        <Button onClick={title && description ? this.addTask : this.error}
+        <Button onClick={title && description && typeCheckbox ? this.addTask : this.error}
                 className="add-button">Add</Button>
         <TaskList/>
       </Wrapper>
@@ -130,6 +165,6 @@ class Panel extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ dataTask }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ addTaskData }, dispatch)
 
 export default connect(null, mapDispatchToProps)(Panel)

@@ -1,9 +1,9 @@
-import {TYPE} from "../constants"
+import { TYPES } from "../constants"
 
-export const dataTask = (title, description, id) => {
+export const addTaskData = (title, description, id, typeCheckbox) => {
   return (dispatch) => {
     dispatch({
-      type: TYPE.ADD_TASK, title, description, id
+      type: TYPES.ADD_TASK, title, description, id, typeCheckbox
     })
   }
 }

@@ -16,9 +16,6 @@ const InputStyled = styled.input`
       color: #6095676b; 
       opacity: 1; 
     }
-    :-ms-input-placeholder { 
-    color: #6095676b;
-    }
     ::-ms-input-placeholder {
         color: #6095676b;
     }
