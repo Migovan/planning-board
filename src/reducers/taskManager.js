@@ -1,11 +1,16 @@
 import { TYPES } from '../constants/index'
 
-const taskManager = (state = [], action) => {
+const initialState = {
+  taskList: []
+}
+
+const taskManager = (state = initialState, action) => {
   switch (action.type) {
     case TYPES.ADD_TASK:
-      const { title, description, id, typeCheckbox } = action
-      return [
-        ...state,
+      const { title, description, id, typeCheckbox } = action.payload
+      return {
+        taskList: [
+        ...state.taskList,
         {
           title,
           description,
@@ -15,36 +20,43 @@ const taskManager = (state = [], action) => {
           done: false,
         }
       ]
+    }
 
     case TYPES.DELETE_TASK:
-      return state.filter(item =>{
-        return item.id !== action.id
-      })
+      const updateTaskList = state.taskList.filter(item => item.id !== action.id)
+      return {
+        taskList: updateTaskList
+      }
 
     case TYPES.EDIT:
-      return state.map(item =>
-      (item.id === action.id)
-        ? {...item, edit: action.showFocus }
-        : item
-      )
-
-    case TYPES.DONE:
-      return state.map(item =>
-        (item.id === action.id)
-          ? {...item, done: action.statusDone }
+      const { idEditTask, showFocus } = action.payload
+      const editTasks = state.taskList.map(item =>
+        item.id === idEditTask
+          ? { ...item, edit: showFocus }
           : item
       )
+      return {
+        taskList: editTasks
+      }
+
+    case TYPES.DONE:
+      const { idDoneTask, statusDone } = action.payload
+      const doneTask = state.taskList.map(item =>
+        item.id === idDoneTask
+          ? {...item, done: statusDone }
+          : item
+      )
+      return {
+        taskList: doneTask
+      }
 
     case TYPES.IMPORTANCE_CHECKBOX:
-      return [
-        ...state,
-        {
-          checkboxImportance: action.payload,
-        }
-      ]
+      return {
+        todos: [ ...state.taskList, { checkboxImportance: action.payload, } ]
+      }
 
     case TYPES.SORT_TASKS:
-      return action.newList
+      return { ...state, taskList: action.newList }
 
     default:
        return state

@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import {connect} from "react-redux"
 import { bindActionCreators } from 'redux'
 import styled, { css } from 'styled-components'
-import { deleteTask, edit, done, sortTasks } from '../../actions'
+import { deleteTask, edit, done, sortTasks } from '../../actionCreator'
 import Button from '../button'
 import SearchBar from '../search-bar'
-
-import CheckMark from '../../assets/icon/done.png'
+import CheckMark from '../../assets/image/coffin.png'
 
 const Ul = styled.ul`
   list-style-type: none;
@@ -32,11 +31,9 @@ const Li = styled.li`
   border-radius: 20px;
   padding: 20px;
   margin: 10px 0 30px;
-  
   ${props => props.typeCheckbox === 'ordinary' && Ordinary};
   ${props => props.typeCheckbox === 'medium' && Medium};
   ${props => props.typeCheckbox === 'high' && High};
- 
   input {
     width: 40%;
     height: 25px;
@@ -110,26 +107,27 @@ class TaskList extends Component {
   }
 
   notSort = () => {
-    this.props.sortTasks(this.props.taskManager)
+    this.props.sortTasks(this.props.taskList)
   }
 
   ordinarySort = () => {
-    const newList = this.props.taskManager.filter(item => item.typeCheckbox ==='ordinary')
+    const newList = this.props.taskList.filter(item => item.typeCheckbox ==='ordinary')
     this.props.sortTasks(newList)
   }
 
   mediumSort = () => {
-    const newList = this.props.taskManager.filter(item => item.typeCheckbox ==='medium')
+    const newList = this.props.taskList.filter(item => item.typeCheckbox ==='medium')
     this.props.sortTasks(newList)
   }
 
   highSort = () => {
-    const newList = this.props.taskManager.filter(item => item.typeCheckbox ==='high')
+    const newList = this.props.taskList.filter(item => item.typeCheckbox ==='high')
     this.props.sortTasks(newList)
   }
 
   render() {
-    const list = this.props.taskManager
+    const taskList = this.props.taskList
+    console.log('list', this.props)
     return (
       <>
         <SearchBar notSort={this.notSort}
@@ -138,16 +136,16 @@ class TaskList extends Component {
                    highSort={this.highSort}
         />
         <Ul>
-          {list.map((item, index) =>
+          {taskList.map((item, index) =>
             <Li key={item.id}
                 edit={item.edit}
                 typeCheckbox={item.typeCheckbox}>
               <div>
                 <section>
                   <input defaultValue={item.title}
-                         readOnly={list[index].edit}/>
+                         readOnly={taskList[index].edit}/>
                   <textarea defaultValue={item.description}
-                            readOnly={list[index].edit}/>
+                            readOnly={taskList[index].edit}/>
                 </section>
                 <div>
                   <Button onClick={() => item.edit
@@ -177,7 +175,7 @@ class TaskList extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    taskManager: state.taskManager
+    taskList: state.taskManager.taskList
   }
 }
 
@@ -188,4 +186,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   sortTasks
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList)
+TaskList = connect(mapStateToProps, mapDispatchToProps)(TaskList)
+
+export default TaskList

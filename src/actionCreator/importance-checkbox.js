@@ -1,9 +1,7 @@
 import { TYPES } from "../constants"
 
 export const showImportanceCheckbox = (payload) => {
-  return (dispatch) => {
-    dispatch({
+  return {
       type: TYPES.IMPORTANCE_CHECKBOX, payload
-    })
   }
 }

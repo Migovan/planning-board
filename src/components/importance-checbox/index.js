@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import styled, { css } from 'styled-components'
-import { showImportanceCheckbox } from '../../actions'
+import { showImportanceCheckbox } from '../../actionCreator'
 import CheckMark from '../../assets/icon/done.png'
 
 
@@ -22,20 +22,6 @@ const Wrapper = styled.label`
   }
 `
 
-const Checkbox = styled.div`
-    height: 20px;
-    width: 20px;
-    margin-right: 20px;
-    cursor: pointer;
-    > input {
-      display: none;
-    }
-    
-    ${props => props.importance === 'ordinary' && OrdinaryImportance}
-    ${props => props.importance === 'medium' && MediumImportance}
-    ${props => props.importance === 'high' && HighImportance}
-`
-
 const OrdinaryImportance = css`
     border: 1px solid #f1d90d;
     background-color: #ffeb3b69;
@@ -50,6 +36,20 @@ const HighImportance = css`
     border: 1px solid #ff0000;
     background-color: #ff00008c;
 `
+
+const Checkbox = styled.div`
+    height: 20px;
+    width: 20px;
+    margin-right: 20px;
+    cursor: pointer;
+    > input {
+      display: none;
+    }
+    ${props => props.importance === 'ordinary' && OrdinaryImportance}
+    ${props => props.importance === 'medium' && MediumImportance}
+    ${props => props.importance === 'high' && HighImportance}
+`
+
 
 const ImportanceCheckbox = ({ onChange, checked, importance }) => {
     return (

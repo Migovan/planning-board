@@ -7,7 +7,7 @@ import {
   ImportanceBlock,
 } from './styled'
 import nanoid from 'nanoid'
-import { addTaskData } from '../actions'
+import { addTaskData } from '../actionCreator'
 import Input from '../components/input'
 import Button from '../components/button'
 import TaskList from '../components/task-list'
