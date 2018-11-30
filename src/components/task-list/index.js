@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import styled, { css } from 'styled-components'
 import { deleteTask, edit, done, sortTasks } from '../../actionCreator'
 import Button from '../button'
-import SearchBar from '../search-bar'
+import SearchBar from '../sort'
 import CheckMark from '../../assets/image/coffin.png'
 
 const Ul = styled.ul`
@@ -77,7 +77,8 @@ class TaskList extends Component {
     super(props)
     this.state = {
       focus: false,
-      done: true
+      done: true,
+      onSortKey: 'none',
     }
   }
 
@@ -106,28 +107,23 @@ class TaskList extends Component {
     this.props.done(id, this.state.done)
   }
 
-  notSort = () => {
-    this.props.sortTasks(this.props.taskList)
-  }
+  notSort = () => this.setState({ onSortKey: 'none' })
 
-  ordinarySort = () => {
-    const newList = this.props.taskList.filter(item => item.typeCheckbox ==='ordinary')
-    this.props.sortTasks(newList)
-  }
+  ordinarySort = () => this.setState({ onSortKey: 'ordinary' })
 
-  mediumSort = () => {
-    const newList = this.props.taskList.filter(item => item.typeCheckbox ==='medium')
-    this.props.sortTasks(newList)
-  }
+  mediumSort = () => this.setState({ onSortKey: 'medium' })
 
-  highSort = () => {
-    const newList = this.props.taskList.filter(item => item.typeCheckbox ==='high')
-    this.props.sortTasks(newList)
-  }
+  highSort = () => this.setState({ onSortKey: 'high' })
 
   render() {
-    const taskList = this.props.taskList
-    console.log('list', this.props)
+    const SORTS = {
+      none: taskList => taskList,
+      ordinary: taskList => taskList.filter(item => item.typeCheckbox ==='ordinary'),
+      medium: taskList => taskList.filter(item => item.typeCheckbox ==='medium'),
+      high: taskList => taskList.filter(item => item.typeCheckbox ==='high'),
+    }
+    const sortedList = SORTS[this.state.onSortKey](this.props.taskList)
+
     return (
       <>
         <SearchBar notSort={this.notSort}
@@ -136,16 +132,16 @@ class TaskList extends Component {
                    highSort={this.highSort}
         />
         <Ul>
-          {taskList.map((item, index) =>
+          {sortedList.map((item, index) =>
             <Li key={item.id}
                 edit={item.edit}
                 typeCheckbox={item.typeCheckbox}>
               <div>
                 <section>
                   <input defaultValue={item.title}
-                         readOnly={taskList[index].edit}/>
+                         readOnly={sortedList[index].edit}/>
                   <textarea defaultValue={item.description}
-                            readOnly={taskList[index].edit}/>
+                            readOnly={sortedList[index].edit}/>
                 </section>
                 <div>
                   <Button onClick={() => item.edit
