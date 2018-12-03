@@ -19,9 +19,3 @@ export const done = (idDoneTask, statusDone) => {
       payload: { idDoneTask, statusDone }
   }
 }
-
-export const sortTasks = (newList) => {
-  return  {
-      type: TYPES.SORT_TASKS, newList
-  }
-}

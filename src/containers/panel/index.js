@@ -7,12 +7,12 @@ import {
   ImportanceBlock,
 } from './styled'
 import nanoid from 'nanoid'
-import { addTaskData } from '../actionCreator'
-import Input from '../components/input'
-import Button from '../components/button'
-import TaskList from '../components/task-list'
-import Error from '../components/error'
-import ImportanceCheckbox from '../components/importance-checbox'
+import { addTaskData } from '../../actionCreator'
+import Input from '../../components/input'
+import Button from '../../components/button'
+import TaskList from '../task-list'
+import Error from '../../components/error'
+import ImportanceCheckbox from '../../components/importance-checbox'
 
 class Panel extends Component {
   constructor(props){

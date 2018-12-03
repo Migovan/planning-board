@@ -52,11 +52,8 @@ const taskManager = (state = initialState, action) => {
 
     case TYPES.IMPORTANCE_CHECKBOX:
       return {
-        todos: [ ...state.taskList, { checkboxImportance: action.payload, } ]
+        taskList: [ ...state.taskList, { checkboxImportance: action.payload, } ]
       }
-
-    case TYPES.SORT_TASKS:
-      return { ...state, taskList: action.newList }
 
     default:
        return state
