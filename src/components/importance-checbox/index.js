@@ -17,8 +17,8 @@ const Wrapper = styled.label`
     width: 18px;
     height: 18px;
     position: relative;
-    top: 2px;
-    right: 30px;
+    top: -3px;
+    right: -1px;
   }
 `
 
@@ -58,8 +58,8 @@ const ImportanceCheckbox = ({ onChange, checked, importance }) => {
             <input onChange={onChange}
                    type="checkbox"
                    checked={checked}/>
+            {checked && <img src={CheckMark} alt="check-mark"/>}
           </Checkbox>
-          {checked && <img src={CheckMark} alt="check-mark"/>}
       </Wrapper>
     )
   }
