@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import {connect} from "react-redux"
-import { bindActionCreators } from 'redux'
-import { deleteTask, edit, done } from '../../actionCreator'
-import Button from '../../components/button'
-import Sort from '../../components/sort'
-import { SortBlock, Li, Ul } from './styled'
-import CheckMark from '../../assets/image/coffin.png'
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
+import { deleteTask, edit, changeDone } from "../../action-creator"
+import Button from "../../components/button"
+import Sort from "../../components/sort"
+import { SortBlock, Li, Ul } from "./styled"
+import CheckMark from "../../assets/image/coffin.png"
 
 class TaskList extends Component {
   constructor(props) {
@@ -13,25 +13,29 @@ class TaskList extends Component {
     this.state = {
       focus: false,
       done: true,
-      onSortKey: 'all',
+      onSortKey: "all"
     }
   }
 
-  editTask = (id) => {
+  edit = id => this.props.edit(id, this.state.focus)
+
+  editTask = (id, callback) => {
     this.setState({
       focus: true
     })
-    this.props.edit(id, this.state.focus)
+    callback(id)
   }
 
-  saveTask = (id) => {
+  saveTask = (id, callback) => {
     this.setState({
       focus: false
     })
-    this.props.edit(id, this.state.focus)
+    callback(id)
   }
 
-  doneTask = (id, done) => {
+  changeDone = (id) => this.props.changeDone(id, this.state.done)
+
+  doneTask = (id, callback) => {
     !this.state.done
       ? this.setState({
         done: true
@@ -39,8 +43,15 @@ class TaskList extends Component {
       : this.setState({
         done: false
         })
-    this.props.done(id, this.state.done)
+    callback(id)
   }
+
+  doneTask = id => {
+    const {done} = this.state
+    this.setState({
+      done,
+    }, () => this.props.done(id, this.state.done))
+    }
 
   sort = (type) => this.setState({ onSortKey: type })
 
@@ -48,19 +59,19 @@ class TaskList extends Component {
     const { deleteTask, taskList } = this.props
     const SORTS = {
       all: taskList => taskList,
-      ordinary: taskList => taskList.filter(item => item.typeCheckbox ==='ordinary'),
-      medium: taskList => taskList.filter(item => item.typeCheckbox ==='medium'),
-      high: taskList => taskList.filter(item => item.typeCheckbox ==='high'),
+      ordinary: taskList => taskList.filter(item => item.typeCheckbox === "ordinary"),
+      medium: taskList => taskList.filter(item => item.typeCheckbox === "medium"),
+      high: taskList => taskList.filter(item => item.typeCheckbox === "high")
     }
     const sortedList = SORTS[this.state.onSortKey](taskList)
 
     return (
       <>
         <SortBlock>
-          <Sort onClick={() => this.sort('all')}>All</Sort>
-          <Sort onClick={() => this.sort('ordinary')}>Ordinary</Sort>
-          <Sort onClick={() => this.sort('medium')}>Medium</Sort>
-          <Sort onClick={() => this.sort('high')}>High</Sort>
+          <Sort onClick={() => this.sort("all")}>All</Sort>
+          <Sort onClick={() => this.sort("ordinary")}>Ordinary</Sort>
+          <Sort onClick={() => this.sort("medium")}>Medium</Sort>
+          <Sort onClick={() => this.sort("high")}>High</Sort>
         </SortBlock>
         <Ul>
           {sortedList.map((item) =>
@@ -76,12 +87,12 @@ class TaskList extends Component {
                 </section>
                 <div>
                   <Button onClick={() => item.edit
-                    ? this.editTask(item.id)
-                    : this.saveTask(item.id)}
+                    ? this.editTask(item.id, this.edit)
+                    : this.saveTask(item.id, this.edit)} 
                           className="small-button">
                     {item.edit ? "Edit" : "Save"}
                   </Button>
-                  <Button onClick={() => this.doneTask(item.id, item.done)}
+                  <Button onClick={() => this.doneTask(item.id, this.changeDone)}
                           className="small-button">
                     {item.done ? "Modify" : "Done"}
                   </Button>
@@ -109,7 +120,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   deleteTask,
   edit,
-  done,
+  changeDone,
 }, dispatch)
 
 TaskList = connect(mapStateToProps, mapDispatchToProps)(TaskList)

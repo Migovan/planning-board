@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import styled, { css } from 'styled-components'
-import { showImportanceCheckbox } from '../../actionCreator'
+import { showImportanceCheckbox } from '../../action-creator'
 import CheckMark from '../../assets/icon/done.png'
 
 

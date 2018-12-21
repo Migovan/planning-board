@@ -13,7 +13,7 @@ export const edit = (idEditTask, showFocus) => {
   }
 }
 
-export const done = (idDoneTask, statusDone) => {
+export const changeDone = (idDoneTask, statusDone) => {
   return  {
       type: TYPES.DONE,
       payload: { idDoneTask, statusDone }

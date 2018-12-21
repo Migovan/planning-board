@@ -7,7 +7,7 @@ import {
   ImportanceBlock,
 } from './styled'
 import nanoid from 'nanoid'
-import { addTaskData } from '../../actionCreator'
+import { addTaskData } from '../../action-creator'
 import Input from '../../components/input'
 import Button from '../../components/button'
 import TaskList from '../task-list'
@@ -130,7 +130,7 @@ class Panel extends Component {
       typeCheckbox
     } = this.state
     const checkedCheckbox = checkboxImportance && typeCheckbox
-
+    
     return (
       <Wrapper>
         <h1>Planning-board.</h1>
